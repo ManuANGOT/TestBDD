@@ -1,0 +1,242 @@
+lolo
+
+sudo -i -u postgres
+
+sudo -u postgres psql
+
+psql -U manuangot -d pire2pire
+ 
+pgcli -h localhost -p 5432 -U manuangot pire2pire
+
+postgres=# \du    _____________ liste des rôles
+\l    _____________ liste des BDD
+\z    _____________ tableau privilèges d'accès
+
+CREATE TABLE user_table (
+ user_id SERIAL PRIMARY KEY,
+ user_name VARCHAR(50) UNIQUE NOT NULL,
+ user_firstname VARCHAR(50)  NOT NULL,
+ user_birthay VARCHAR ( 255 ) UNIQUE NOT NULL,
+ user_password VARCHAR(50) UNIQUE NOT NULL);
+
+pire2pire> UPDATE user_table
+ SET user_password = 'newPassNoween'
+ WHERE user_id = '2';
+
+pire2pire> INSERT INTO user_table
+ VALUES ( '4',' Apeuprès', 'Jean-Michel', '03-02-1970',  'pas456');
+
+pire2pire> DELETE FROM user_table
+ WHERE user_id = '3';
+
+Sauvegarder base de données à exporter :
+Sortir de la base
+$ sudo -i -u postgres
+postgres@DESKTOP-IE72UJ2:~$  pg_dump -d pire2pire -f p2pbackup.sql
+postgres@DESKTOP-IE72UJ2:~$ ls
+15  p2pbackup.sql
+
+Restaurer base de données
+
+Agent pid 5894
+/home/manu/.zshrc:read:139: -p: no coprocess
+> pgcli -h localhost -p 5432 -U manuangot pire2pire
+Password for manuangot:
+connection failed: FATAL:  password authentication failed for user "manuangot"
+connection to server at "localhost" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user "manuangot"
+> pgcli -h localhost -p 5432 -U manuangot pire2pire
+Password for manuangot:
+Server: PostgreSQL 15.3 (Ubuntu 15.3-1.pgdg22.04+1)
+Version: 3.5.0
+Home: http://pgcli.com
+pire2pire> DROP DATABASE pire2pire;
+You're about to run a destructive command.
+Do you want to proceed? (y/n): y
+Your call!
+cannot drop the currently open database
+Time: 0.008s
+pire2pire> \q
+Goodbye!
+> sudo -u postgres psql
+[sudo] password for manu:
+Sorry, try again.
+[sudo] password for manu:
+could not change directory to "/home/manu": Permission denied
+psql (15.3 (Ubuntu 15.3-1.pgdg22.04+1))
+Type "help" for help.
+
+postgres=# DROP DATABASE pire2pire;
+DROP DATABASE
+postgres=# \l
+                                               List of databases
+     Name     |  Owner   | Encoding | Collate |  Ctype  | ICU Locale | Locale Provider |   Access privileges
+--------------+----------+----------+---------+---------+------------+-----------------+-----------------------
+ manu/TestBDD | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            |
+ postgres     | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            |
+ template0    | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | =c/postgres          +
+              |          |          |         |         |            |                 | postgres=CTc/postgres
+ template1    | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | =c/postgres          +
+              |          |          |         |         |            |                 | postgres=CTc/postgres
+(4 rows)
+
+postgres=# DROP DATABASE "manu/TestBDD";
+DROP DATABASE
+postgres=# \l
+                                             List of databases
+   Name    |  Owner   | Encoding | Collate |  Ctype  | ICU Locale | Locale Provider |   Access privileges
+-----------+----------+----------+---------+---------+------------+-----------------+-----------------------
+ postgres  | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            |
+ template0 | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | =c/postgres          +
+           |          |          |         |         |            |                 | postgres=CTc/postgres
+ template1 | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | =c/postgres          +
+           |          |          |         |         |            |                 | postgres=CTc/postgres
+(3 rows)
+
+postgres=# pg_restore -d pire2pire  p2pbackup.sql -c
+postgres-# \l
+                                             List of databases
+   Name    |  Owner   | Encoding | Collate |  Ctype  | ICU Locale | Locale Provider |   Access privileges
+-----------+----------+----------+---------+---------+------------+-----------------+-----------------------
+ postgres  | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            |
+ template0 | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | =c/postgres          +
+           |          |          |         |         |            |                 | postgres=CTc/postgres
+ template1 | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | =c/postgres          +
+           |          |          |         |         |            |                 | postgres=CTc/postgres
+(3 rows)
+
+postgres-# pg_restore -d pire2pire  p2pbackup.sql -c;
+ERROR:  syntax error at or near "pg_restore"
+LINE 1: pg_restore -d pire2pire  p2pbackup.sql -c
+        ^
+postgres=# \q
+> \
+postgres@DESKTOP-IE72UJ2:~$ pg_restore -d pire2pire  p2pbackup.sql -c
+pg_restore: error: input file appears to be a text format dump. Please use psql.
+postgres@DESKTOP-IE72UJ2:~$ psql
+psql (15.3 (Ubuntu 15.3-1.pgdg22.04+1))
+Type "help" for help.
+
+postgres=# pg_restore -d pire2pire  p2pbackup.sql -c
+postgres-# \l
+                                             List of databases
+   Name    |  Owner   | Encoding | Collate |  Ctype  | ICU Locale | Locale Provider |   Access privileges
+-----------+----------+----------+---------+---------+------------+-----------------+-----------------------
+ postgres  | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            |
+ template0 | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | =c/postgres          +
+           |          |          |         |         |            |                 | postgres=CTc/postgres
+ template1 | postgres | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            | =c/postgres          +
+           |          |          |         |         |            |                 | postgres=CTc/postgres
+(3 rows)
+
+postgres-# pg_restore -d pire2pire  p2pbackup.sql -c;
+ERROR:  syntax error at or near "pg_restore"
+LINE 1: pg_restore -d pire2pire  p2pbackup.sql -c
+        ^
+postgres=# CREATE DATABASE pire2pire;
+CREATE DATABASE
+postgres=# GRANT ALL PRIVILEGES ON DATABASE pire2pire TO manuangot;
+GRANT
+postgres=# \du
+                                   List of roles
+ Role name |                         Attributes                         | Member of
+-----------+------------------------------------------------------------+-----------
+ Nolwenn   |                                                            | {}
+ manuangot | Superuser, Create role, Create DB                          | {}
+ postgres  | Superuser, Create role, Create DB, Replication, Bypass RLS | {}
+
+postgres=#
+postgres=# \q
+postgres@DESKTOP-IE72UJ2:~$ psql pire2pire < p2pbackup.sql
+SET
+SET
+SET
+SET
+SET
+ set_config
+------------
+
+(1 row)
+
+SET
+SET
+SET
+SET
+SET
+SET
+CREATE TABLE
+ALTER TABLE
+CREATE SEQUENCE
+ALTER TABLE
+ALTER SEQUENCE
+ALTER TABLE
+COPY 3
+ setval
+--------
+      1
+(1 row)
+
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+postgres@DESKTOP-IE72UJ2:~$ psql
+psql (15.3 (Ubuntu 15.3-1.pgdg22.04+1))
+Type "help" for help.
+
+postgres=# \dt
+Did not find any relations.
+postgres=# \q
+postgres@DESKTOP-IE72UJ2:~$ exit
+logout
+> pgcli -h localhost -p 5432 -U manuangot pire2pire
+Password for manuangot:
+connection failed: FATAL:  password authentication failed for user "manuangot"
+connection to server at "localhost" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user "manuangot"
+> pgcli -h localhost -p 5432 -U manuangot pire2pire
+Password for manuangot:
+Server: PostgreSQL 15.3 (Ubuntu 15.3-1.pgdg22.04+1)
+Version: 3.5.0
+Home: http://pgcli.com
+pire2pire> \dt
++--------+------------+-------+-----------+
+| Schema | Name       | Type  | Owner     |
+|--------+------------+-------+-----------|
+| public | user_table | table | manuangot |
++--------+------------+-------+-----------+
+SELECT 1
+Time: 0.020s
+pire2pire> SELECT * FROM user_table;
++---------+------------+----------------+--------------+---------------+
+| user_id | user_name  | user_firstname | user_birthay | user_password |
+|---------+------------+----------------+--------------+---------------|
+| 1       | Angot      | Henri          | 27-07-1974   | password123   |
+| 2       | LaBretonne | Nolween        | 10-06-1995   | newPassNoween |
+| 4       |  Apeuprès  | Jean-Michel    | 03-02-1970   | pas456        |
++---------+------------+----------------+--------------+---------------+
+SELECT 3
+Time: 0.014s
+pire2pire>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
