@@ -1,0 +1,140 @@
+CREATE TABLE app_users(
+   id_app_user SERIAL,
+   name_app_users VARCHAR(20)  NOT NULL,
+   first_name__app_users VARCHAR(20)  NOT NULL,
+   birth_date_app_users DATE,
+   adress_app_users VARCHAR(150) ,
+   PRIMARY KEY(id_app_user)
+);
+
+CREATE TABLE user_roles(
+   id_role_roles SERIAL,
+   is_admin_roles BOOLEAN NOT NULL,
+   is_student_roles BOOLEAN NOT NULL,
+   is_former_roles BOOLEAN NOT NULL,
+   PRIMARY KEY(id_role_roles)
+);
+
+CREATE TABLE learning_programs(
+   id_learning_program SERIAL,
+   title_learning_programs VARCHAR(150)  NOT NULL,
+   PRIMARY KEY(id_learning_program)
+);
+
+CREATE TABLE instructional_units(
+   id_instructional_unit SERIAL,
+   title_instructional_units VARCHAR(150)  NOT NULL,
+   content_instructional_units TEXT,
+   PRIMARY KEY(id_instructional_unit)
+);
+
+CREATE TABLE tags_instructional_units(
+   id_tag_instructional_units SERIAL,
+   name_tag_instructional_units VARCHAR(50)  NOT NULL,
+   PRIMARY KEY(id_tag_instructional_units),
+   UNIQUE(name_tag_instructional_units)
+);
+
+CREATE TABLE course_modules(
+   id_course_module SERIAL,
+   title_course_modules VARCHAR(50)  NOT NULL,
+   number_course_modules VARCHAR(50)  NOT NULL,
+   objective_course_modules VARCHAR(255) ,
+   duration_course_modules VARCHAR(50) ,
+   PRIMARY KEY(id_course_module)
+);
+
+CREATE TABLE tags_course_modules(
+   id_tag_course_modules SERIAL,
+   name_tag_course_modules VARCHAR(50)  NOT NULL,
+   PRIMARY KEY(id_tag_course_modules),
+   UNIQUE(name_tag_course_modules)
+);
+
+CREATE TABLE set_definitions(
+   id_app_user INTEGER,
+   id_role_roles INTEGER,
+   PRIMARY KEY(id_app_user, id_role_roles),
+   FOREIGN KEY(id_app_user) REFERENCES app_users(id_app_user),
+   FOREIGN KEY(id_role_roles) REFERENCES user_roles(id_role_roles)
+);
+
+CREATE TABLE engagement(
+   id_app_user INTEGER,
+   id_learning_program INTEGER,
+   PRIMARY KEY(id_app_user, id_learning_program),
+   FOREIGN KEY(id_app_user) REFERENCES app_users(id_app_user),
+   FOREIGN KEY(id_learning_program) REFERENCES learning_programs(id_learning_program)
+);
+
+CREATE TABLE authorship(
+   id_app_user INTEGER,
+   id_instructional_unit INTEGER,
+   PRIMARY KEY(id_app_user, id_instructional_unit),
+   FOREIGN KEY(id_app_user) REFERENCES app_users(id_app_user),
+   FOREIGN KEY(id_instructional_unit) REFERENCES instructional_units(id_instructional_unit)
+);
+
+CREATE TABLE ownership(
+   id_instructional_unit INTEGER,
+   id_tag_instructional_units INTEGER,
+   PRIMARY KEY(id_instructional_unit, id_tag_instructional_units),
+   FOREIGN KEY(id_instructional_unit) REFERENCES instructional_units(id_instructional_unit),
+   FOREIGN KEY(id_tag_instructional_units) REFERENCES tags_instructional_units(id_tag_instructional_units)
+);
+
+CREATE TABLE verification(
+   id_app_user INTEGER,
+   id_course_module INTEGER,
+   PRIMARY KEY(id_app_user, id_course_module),
+   FOREIGN KEY(id_app_user) REFERENCES app_users(id_app_user),
+   FOREIGN KEY(id_course_module) REFERENCES course_modules(id_course_module)
+);
+
+CREATE TABLE composition(
+   id_instructional_unit INTEGER,
+   id_course_module INTEGER,
+   PRIMARY KEY(id_instructional_unit, id_course_module),
+   FOREIGN KEY(id_instructional_unit) REFERENCES instructional_units(id_instructional_unit),
+   FOREIGN KEY(id_course_module) REFERENCES course_modules(id_course_module)
+);
+
+CREATE TABLE inclusion(
+   id_app_user INTEGER,
+   id_course_module INTEGER,
+   PRIMARY KEY(id_app_user, id_course_module),
+   FOREIGN KEY(id_app_user) REFERENCES app_users(id_app_user),
+   FOREIGN KEY(id_course_module) REFERENCES course_modules(id_course_module)
+);
+
+CREATE TABLE creation(
+   id_app_user INTEGER,
+   id_learning_program INTEGER,
+   PRIMARY KEY(id_app_user, id_learning_program),
+   FOREIGN KEY(id_app_user) REFERENCES app_users(id_app_user),
+   FOREIGN KEY(id_learning_program) REFERENCES learning_programs(id_learning_program)
+);
+
+CREATE TABLE containment(
+   id_learning_program INTEGER,
+   id_course_module INTEGER,
+   PRIMARY KEY(id_learning_program, id_course_module),
+   FOREIGN KEY(id_learning_program) REFERENCES learning_programs(id_learning_program),
+   FOREIGN KEY(id_course_module) REFERENCES course_modules(id_course_module)
+);
+
+CREATE TABLE possession(
+   id_course_module INTEGER,
+   id_tag_course_modules INTEGER,
+   PRIMARY KEY(id_course_module, id_tag_course_modules),
+   FOREIGN KEY(id_course_module) REFERENCES course_modules(id_course_module),
+   FOREIGN KEY(id_tag_course_modules) REFERENCES tags_course_modules(id_tag_course_modules)
+);
+
+CREATE TABLE access_logs(
+   id_app_user INTEGER,
+   id_instructional_unit INTEGER,
+   PRIMARY KEY(id_app_user, id_instructional_unit),
+   FOREIGN KEY(id_app_user) REFERENCES app_users(id_app_user),
+   FOREIGN KEY(id_instructional_unit) REFERENCES instructional_units(id_instructional_unit)
+);
